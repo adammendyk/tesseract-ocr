@@ -5,21 +5,27 @@ import numpy as np
 
 # Defining main function
 def main(img):
-    text = pytesseract.image_to_string(roi)
+    img = get_grayscale(img)
+    img = roi(img)
+    img = invert(img)
+    # img = remove_noise(img, 1)
+    # img = thresholding(img)
+    # img = dilate(img, 1)
+    # img = opening(img, 1)
+    show_img(img)
+    text = pytesseract.image_to_string(img)
     # return text
     print(text)
 
 
 # Read file
-with cv2.imread('img01.png') as img:
-    img = img
-    # img = cv2.imread('./images/img01.png')
+img = cv2.imread('./images/img01.png')
 
 
 # Converting image to grayscale
 def get_grayscale(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
 # Inverting color
@@ -28,24 +34,36 @@ def invert(img):
 
 
 # Noise removal
-def remove_noise(img):
-    return cv2.medianBlur(img, 5)
+def remove_noise(img, size=1):
+    return cv2.medianBlur(img, size)
 
 
 # Threshold
-def thresholding(img):
-    return cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+def thresholding(img, vfrom=0, vto=255):
+    return cv2.threshold(img, vfrom, vto,
+                         cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
 
 # Dilatinf
-def dilate(img):
-    kernel = np.ones((5, 5), np.uint8)
+def dilate(img, ksize=3):
+    kernel = np.ones((ksize, ksize), np.uint8)
     return cv2.dilate(img, kernel, iterations=1)
 
 
+# Opening - erosion foloved by dilation
+def opening(img, ksize=3):
+    kernel = np.ones((ksize, ksize), np.uint8)
+    return cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+
+
 # Acquiring image dimensions
-# height, width, _ = img.shape  # for rgb
-# height, width = img.shape  # for grayscale
+def get_dimensions(img, rgb=0):
+    """rgb defaults to 0 accuming grayscale image"""
+
+    if rgb == 1:
+        height, width, _ = img.shape  # for rgb
+    else:
+        height, width = img.shape  # for grayscale
 
 
 # Region of interest
@@ -55,12 +73,11 @@ def roi(img):
     return roi
 
 
-# Setting region of interest
-# cv2.imshow('img01', img)
-# cv2.imshow('roi', roi)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-# # print(img.shape)
+# Showing an image
+def show_img(img):
+    cv2.imshow('img01', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 # Calling main function
