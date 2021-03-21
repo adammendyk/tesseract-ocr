@@ -1,0 +1,8 @@
+# vsc
+.vscode
+
+# binaries
+.pyc
+
+# cbk
+.pdf
