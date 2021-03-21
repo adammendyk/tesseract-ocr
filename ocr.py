@@ -6,9 +6,9 @@ import numpy as np
 # Defining main function
 def main(img):
     img = get_grayscale(img)
-    img = roi(img)
+    # img = roi(img)
     img = invert(img)
-    # img = remove_noise(img, 1)
+    img = remove_noise(img, 1)
     # img = thresholding(img)
     # img = dilate(img, 1)
     # img = opening(img, 1)
