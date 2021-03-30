@@ -8,24 +8,28 @@ def main(img):
     img = get_grayscale(img)
     img = roi(img)
     img = invert(img)
-    img = remove_noise(img, 1)
-    # img = thresholding(img)
-    # img = dilate(img, 1)
-    # img = opening(img, 1)
+    img = remove_noise(img, 3)
+    img = thresholding(img, 8)
+    img = dilate(img, 5)
+    img = opening(img, 1)
     show_img(img)
     text = pytesseract.image_to_string(img)
+    # img_dim = get_dimensions(img)
+    # print(img_dim)
+    # print(img.shape)
     # return text
     print(text)
 
 
 # Read file
-img = cv2.imread('./images/img01.png')
+# img = cv2.imread('./images/img01.png')
+img = cv2.imread('./images/710829_001.tif')
 
 
 # Converting image to grayscale
 def get_grayscale(img):
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-# img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 
 # Inverting color
@@ -57,25 +61,28 @@ def opening(img, ksize=3):
 
 
 # Acquiring image dimensions
-def get_dimensions(img, rgb=0):
+def get_dimensions(img):
     """rgb defaults to 0 accuming grayscale image"""
 
-    if rgb == 1:
+    if len(img.shape) == 3:
         height, width, _ = img.shape  # for rgb
-    else:
+    elif len(img.shape) == 2:
         height, width = img.shape  # for grayscale
+    else:
+        pass
+    return height, width
 
 
 # Region of interest
 def roi(img):
     height, width = img.shape
-    roi = img[247:height-90, 585:]
+    roi = img[978:height-480, 1920-width:-30]
     return roi
 
 
 # Showing an image
 def show_img(img):
-    cv2.imshow('img01', img)
+    cv2.imshow('710829_001', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
